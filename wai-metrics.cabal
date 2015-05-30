@@ -1,0 +1,38 @@
+name:                wai-metrics
+version:             0.1.0.0
+synopsis:            A WAI middleware that measures requests metrics
+-- description:
+license:             BSD3
+license-file:        LICENSE
+author:              Sebastian de Bellefon
+maintainer:          arnaudpourseb@gmail.com
+-- copyright:
+category:            Network
+build-type:          Simple
+-- extra-source-files:
+cabal-version:       >=1.10
+
+library
+  -- exposed-modules:
+  -- other-modules:
+  -- other-extensions:
+  build-depends:       base >=4.7 && <4.8
+                      ,wai
+                      ,ekg-core
+  hs-source-dirs:      Network
+  default-language:    Haskell2010
+
+test-suite unit
+  build-depends:       base
+                     , wai
+                     , ekg-core
+                     , wai-metrics
+                     , tasty
+                     , tasty-hunit
+                     , scotty
+                     , transformers
+                     , bytestring
+                     , wai-extra
+  type:                exitcode-stdio-1.0
+  main-is:             tests.hs
+  default-language:    Haskell2010
