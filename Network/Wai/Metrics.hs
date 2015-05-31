@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Network.Wai.Metrics (
-  initCounter,
+  addWaiMetrics,
+  WaiMetrics(..),
   metrics) where
 
 import Network.Wai
@@ -10,18 +11,22 @@ import Control.Monad (when)
 import qualified System.Metrics.Counter as Counter
 import Network.HTTP.Types.Status (statusIsServerError)
 
-initCounter :: IO (Counter.Counter, Counter.Counter)
-initCounter = do
-  store <- newStore
-  requests <- createCounter "wai_request_count" store
-  serverErrors <- createCounter "wai_server_error_count" store
-  return (requests, serverErrors)
+data WaiMetrics = WaiMetrics {
+  requestCounter :: Counter.Counter
+ ,serverErrorCounter :: Counter.Counter
+}
 
-metrics :: Counter.Counter -> Counter.Counter -> Middleware
-metrics counter errorCounter app req respond = do
-  Counter.inc counter
+addWaiMetrics :: Store -> IO WaiMetrics
+addWaiMetrics store = do
+  req <- createCounter "wai_request_count" store
+  err <- createCounter "wai_server_error_count" store
+  return $ WaiMetrics req err
+
+metrics :: WaiMetrics -> Middleware
+metrics waiMetrics app req respond = do
+  Counter.inc (requestCounter waiMetrics)
   app req respond'
     where respond' :: Response -> IO ResponseReceived
           respond' res = do
-            when (statusIsServerError $ responseStatus res) (Counter.inc errorCounter)
+            when (statusIsServerError $ responseStatus res) (Counter.inc (serverErrorCounter waiMetrics))
             respond res
