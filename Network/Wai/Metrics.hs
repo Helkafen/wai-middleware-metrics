@@ -11,7 +11,7 @@ import qualified System.Metrics.Counter as Counter
 initCounter :: IO Counter.Counter
 initCounter = do
   store <- newStore
-  requests <- createCounter "request_count" store
+  requests <- createCounter "wai_request_count" store
   return requests
 
 metrics :: Counter.Counter -> Middleware
