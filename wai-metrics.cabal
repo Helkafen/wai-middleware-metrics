@@ -40,7 +40,8 @@ test-suite unit
                      , ekg-core
                      , wai-metrics
                      , tasty
-                     , tasty-hunit
+                     , tasty-quickcheck
+                     , QuickCheck
                      , scotty
                      , transformers
                      , bytestring
