@@ -22,6 +22,16 @@ library
   hs-source-dirs:      Network
   default-language:    Haskell2010
 
+executable sc
+  build-depends:       base >=4.7 && <4.8
+                      ,wai-metrics
+                      ,ekg-core
+                      ,transformers
+                      ,wai
+                      ,scotty
+  main-is:             sc.hs
+  default-language:    Haskell2010
+
 test-suite unit
   build-depends:       base
                      , wai
