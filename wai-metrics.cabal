@@ -1,29 +1,26 @@
 name:                wai-metrics
 version:             0.1.0.0
 synopsis:            A WAI middleware that measures requests metrics
--- description:
+description:         This WAI middleware counts the number of requests and the number of server errors (http status from 500 to 600).
+                     It can be added to any WAI-based webserver, such as Yesod, Scotty, Spock and Servant.
+                     The counters are EKG Counters from ekg-core. <https://ocharles.org.uk/blog/posts/2012-12-11-24-day-of-hackage-ekg.html>
 license:             BSD3
 license-file:        LICENSE
 author:              Sebastian de Bellefon
 maintainer:          arnaudpourseb@gmail.com
--- copyright:
 category:            Network
 build-type:          Simple
--- extra-source-files:
 cabal-version:       >=1.10
 
 library
-  -- exposed-modules:
-  -- other-modules:
-  -- other-extensions:
+  exposed-modules:     Network.Wai.Metrics
   build-depends:       base >=4.7 && <4.8
                       ,wai
                       ,ekg-core
                       ,http-types
-  hs-source-dirs:      Network
   default-language:    Haskell2010
 
-executable sc
+executable wai-metrics-scotty-demo
   build-depends:       base >=4.7 && <4.8
                      , wai-metrics
                      , ekg-core
@@ -31,7 +28,7 @@ executable sc
                      , wai
                      , scotty
                      , http-types
-  main-is:             sc.hs
+  main-is:             wai-metrics-scotty-demo.hs
   default-language:    Haskell2010
 
 test-suite unit
@@ -50,3 +47,7 @@ test-suite unit
   type:                exitcode-stdio-1.0
   main-is:             tests.hs
   default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: git://github.com/Helkafen/wai-metrics.git

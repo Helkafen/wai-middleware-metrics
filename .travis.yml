@@ -6,3 +6,5 @@ script:
  - cabal configure --enable-tests
  - cabal build
  - cabal test
+ - cabal check
+ - cabal sdist
