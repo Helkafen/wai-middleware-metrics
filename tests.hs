@@ -2,10 +2,13 @@
 
 module Main where
 
-import Control.Monad (replicateM_)
+import Control.Monad (replicateM_, liftM)
+import Control.Concurrent (threadDelay)
+import Control.Monad.IO.Class (liftIO)
 import Data.Int (Int64)
 
 import Test.Tasty
+import Test.Tasty.HUnit
 import qualified Test.Tasty.QuickCheck as QC
 import qualified Test.QuickCheck.Monadic as QCM
 import qualified Data.ByteString as BS
@@ -17,58 +20,72 @@ import qualified Network.Wai.Test as WT
 
 import System.Metrics
 import qualified System.Metrics.Counter as Counter
+import qualified System.Metrics.Distribution as Distribution
 
 import Network.Wai.Metrics
 
 -- Send a GET request to a WAI Application
-http_get :: BS.ByteString -> Application -> IO WT.SResponse
-http_get path app =
-  WT.runSession (WT.srequest (WT.SRequest req "")) app
-      where req = WT.setRawPathInfo WT.defaultRequest path
+httpGet :: BS.ByteString -> Application -> IO WT.SResponse
+httpGet path =  WT.runSession (WT.srequest (WT.SRequest req ""))
+  where req = WT.setRawPathInfo WT.defaultRequest path
+
+between :: Ord a => a -> a -> a -> Bool
+between low high x = low <= x && x <= high
 
 -- Return the state of Wai Metrics after running n times
 -- an action over a fresh scotty server
-test_server :: (Application -> IO a) -> Int -> IO WaiMetrics
-test_server action times = do
+testServer :: (Application -> IO a) -> Int -> IO WaiMetrics
+testServer action times = do
   store <- newStore
   waiMetrics <- addWaiMetrics store
   app <- scottyApp $ do
     middleware (metrics waiMetrics)
     get "/" $ html "Ping"
     get "/error" $ raise "error"
+    get "/wait" $ liftIO (threadDelay 100000) >> html "Ping"
   replicateM_ times (action app)
   return waiMetrics
 
 -- Return the number of requests after running n times
 -- an action over a fresh scotty server
-read_request_counter :: (Application -> IO a) -> Int -> IO Int64
-read_request_counter action times = do
-  waiMetrics <- test_server action times
-  requests <- Counter.read (requestCounter waiMetrics)
-  return requests
+readRequestCounter :: (Application -> IO a) -> Int -> IO Int64
+readRequestCounter action times = do
+  waiMetrics <- testServer action times
+  Counter.read (requestCounter waiMetrics)
 
 -- Return the number of server errors after running n times
 -- an action over a fresh scotty server
-read_error_counter :: (Application -> IO a) -> Int -> IO Int64
-read_error_counter action times = do
-  waiMetrics <- test_server action times
-  requests <- Counter.read (requestCounter waiMetrics)
-  return requests
+readErrorCounter :: (Application -> IO a) -> Int -> IO Int64
+readErrorCounter action times = do
+  waiMetrics <- testServer action times
+  Counter.read (serverErrorCounter waiMetrics)
 
-test_request_counter_scotty :: QC.NonNegative Int -> QC.Property
-test_request_counter_scotty (QC.NonNegative n) =  QCM.monadicIO test
-  where test = do c <- QCM.run $ read_request_counter (http_get "") n
-                  QCM.assert $ (fromIntegral c) == n
+-- Return the response time distribution after running n times
+-- an action over a fresh scotty server
+readResponseTime :: (Application -> IO a) -> Int -> IO Distribution.Stats
+readResponseTime action times = do
+  waiMetrics <- testServer action times
+  Distribution.read (responseTimeDistribution waiMetrics)
 
-test_error_counter_scotty :: QC.NonNegative Int -> QC.Property
-test_error_counter_scotty (QC.NonNegative n) =  QCM.monadicIO test
-  where test = do c <- QCM.run $ read_error_counter (http_get "/error") n
-                  QCM.assert $ (fromIntegral c) == n
+testRequestCounterScotty :: QC.NonNegative Int -> QC.Property
+testRequestCounterScotty (QC.NonNegative n) =  QCM.monadicIO test
+  where test = do c <- QCM.run $ readRequestCounter (httpGet "") n
+                  QCM.assert $ fromIntegral c == n
+
+testErrorCounterScotty :: QC.NonNegative Int -> QC.Property
+testErrorCounterScotty (QC.NonNegative n) =  QCM.monadicIO test
+  where test = do c <- QCM.run $ readErrorCounter (httpGet "/error") n
+                  QCM.assert $ fromIntegral c == n
+
+testResponseTimeScotty :: IO()
+testResponseTimeScotty =  do s <- readResponseTime (httpGet "/wait") 3
+                             assert $ between 0.1 0.11 (Distribution.mean s)
 
 tests :: TestTree
 tests = testGroup "Metrics tests" [
-    QC.testProperty "Request counter must be incremented in middleware" test_request_counter_scotty
-  , QC.testProperty "Error counter must be incremented in middleware" test_error_counter_scotty]
+    QC.testProperty "Request counter must be incremented in middleware" testRequestCounterScotty
+  , QC.testProperty "Error counter must be incremented in middleware" testErrorCounterScotty
+  , testCase "Request time average must be measured in middleware" testResponseTimeScotty]
 
 main :: IO()
 main = defaultMain tests

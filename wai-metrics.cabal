@@ -1,5 +1,5 @@
 name:                wai-metrics
-version:             0.1.0.0
+version:             0.2.0.0
 synopsis:            A WAI middleware that measures requests metrics
 description:         This WAI middleware counts the number of requests and the number of server errors (http status from 500 to 600).
                      It can be added to any WAI-based webserver, such as Yesod, Scotty, Spock and Servant.
@@ -18,7 +18,9 @@ library
                       ,wai
                       ,ekg-core
                       ,http-types
+                      ,time
   default-language:    Haskell2010
+  ghc-options:        -O2 -Wall
 
 executable wai-metrics-scotty-demo
   build-depends:       base >=4.7 && <4.8
@@ -28,8 +30,10 @@ executable wai-metrics-scotty-demo
                      , wai
                      , scotty
                      , http-types
+                     , time
   main-is:             wai-metrics-scotty-demo.hs
   default-language:    Haskell2010
+  ghc-options:        -O2 -Wall
 
 test-suite unit
   build-depends:       base
@@ -37,6 +41,7 @@ test-suite unit
                      , ekg-core
                      , wai-metrics
                      , tasty
+                     , tasty-hunit
                      , tasty-quickcheck
                      , QuickCheck
                      , scotty
@@ -44,6 +49,7 @@ test-suite unit
                      , bytestring
                      , wai-extra
                      , http-types
+                     , time
   type:                exitcode-stdio-1.0
   main-is:             tests.hs
   default-language:    Haskell2010
