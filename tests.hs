@@ -37,7 +37,7 @@ between low high x = low <= x && x <= high
 testServer :: (Application -> IO a) -> Int -> IO WaiMetrics
 testServer action times = do
   store <- newStore
-  waiMetrics <- addWaiMetrics store
+  waiMetrics <- registerWaiMetrics store
   app <- scottyApp $ do
     middleware (metrics waiMetrics)
     get "/" $ html "Ping"
@@ -65,7 +65,7 @@ readErrorCounter action times = do
 readResponseTime :: (Application -> IO a) -> Int -> IO Distribution.Stats
 readResponseTime action times = do
   waiMetrics <- testServer action times
-  Distribution.read (responseTimeDistribution waiMetrics)
+  Distribution.read (latencyDistribution waiMetrics)
 
 testRequestCounterScotty :: QC.NonNegative Int -> QC.Property
 testRequestCounterScotty (QC.NonNegative n) =  QCM.monadicIO test

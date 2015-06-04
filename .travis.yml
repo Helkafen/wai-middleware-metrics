@@ -1,10 +1,11 @@
 language: haskell
 ghc: 7.8
 install:
- - cabal install --only-dependencies --enable-tests
+ - cabal install --only-dependencies --enable-tests --enable-documentation
 script:
  - cabal configure --enable-tests
  - cabal build
  - cabal test
  - cabal check
+ - cabal haddock
  - cabal sdist
