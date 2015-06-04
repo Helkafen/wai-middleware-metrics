@@ -4,10 +4,16 @@ Module      : Network.Wai.Metrics
 License     : BSD3
 Stability   : experimental
 
-A WAI middleware to collect <https://ocharles.org.uk/blog/posts/2012-12-11-24-day-of-hackage-ekg.html EKG> metrics of compatible web servers.
+A <http://hackage.haskell.org/package/wai WAI> middleware to collect the following <https://ocharles.org.uk/blog/posts/2012-12-11-24-day-of-hackage-ekg.html EKG> metrics from compatible web servers:
+
+* number of requests (counter @wai.request_count@)
+* number of server errors (counter @wai.server_error_count@)
+* latency distribution (distribution @wai.latency_distribution@)
+
 
 Here's an example of reading these metrics from a Scotty server, and displaying them with EKG.
 
+> -- Compile with GHC option `-with-rtsopts=-T` for GC metrics
 > import Web.Scotty
 > import Control.Applicative
 > import System.Remote.Monitoring (serverMetricStore, forkServer)
@@ -23,7 +29,7 @@ Here's an example of reading these metrics from a Scotty server, and displaying 
 
 Now have a look at <http://localhost:8000 your local EKG instance> and display the request count by clicking on 'wai.request_count'.
 
-WAI metrics can also be added to a bare EKG store, with no UI. Use ekg-core's newStore function.
+WAI metrics can also be stored in a bare EKG store, with no UI and no GC metrics. Use ekg-core's newStore function.
 
 Compatible web servers include the following:
 
@@ -60,7 +66,7 @@ Register in EKG a number of metrics related to web server activity.
 
 * @wai.request_count@
 * @wai.server_error_count@
-* @wai.response_time_distribution@
+* @wai.latency_distribution@
 -}
 registerWaiMetrics :: Store -> IO WaiMetrics
 registerWaiMetrics store = do
