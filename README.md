@@ -4,12 +4,6 @@ A WAI middleware to collect the following [EKG](https://ocharles.org.uk/blog/pos
 - number of server errors (counter `wai.server_error_count`)
 - latency distribution (distribution `wai.latency_distribution`)
 
+Compatible web servers include the following: Yesod, Scotty, Spock, Servant, Warp.
+
 Documentation and sample code [here](https://hackage.haskell.org/package/wai-metrics).
-
-Compatible web servers include the following:
-
-* Yesod
-* Scotty
-* Spock
-* Servant
-* Warp
