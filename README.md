@@ -1,19 +1,23 @@
 # wai-metrics
-WAI middleware that collects requests metrics.
+A WAI middleware to collect the following [EKG](https://ocharles.org.uk/blog/posts/2012-12-11-24-day-of-hackage-ekg.html) metrics of compatible web servers:
+- number of requests (counter `wai.request_count`)
+- number of server errors (counter `wai.server_error_count`)
+- latency distribution (distribution `wai.latency_distribution`)
 
-Provides a WAI middleware that feeds the following EKG Counters.
-- number of requests (counter `wai_request_count`)
-- number of server errors (counter `wai_server_error_count`)
-
-Typical usage, with Scotty:
+Typical usage, with Scotty (compile with GHC option `-with-rtsopts=-T` for GC metrics):
 ```
+import Web.Scotty
+import Control.Applicative
+import System.Remote.Monitoring (serverMetricStore, forkServer)
+import Network.Wai.Metrics
+
 main :: IO()
 main = do
-  store <- newStore                  -- Create an EKG store
-  waiMetrics <- addWaiMetrics store  -- Register both counters in EKG
+  store <- serverMetricStore <$> forkServer "localhost" 8000
+  waiMetrics <- registerWaiMetrics store
   scotty 3000 $ do
-    middleware (metrics waiMetrics)  -- Add the middleware to Scotty
+    middleware (metrics waiMetrics)
     get "/" $ html "Ping"
 ```
 
-See wai-metrics-scotty-demo.hs in git for a full demo.
+See wai-metrics-scotty-demo.hs for a full demo.
