@@ -1,5 +1,6 @@
 language: haskell
 ghc: 7.8
+ghc: 7.10
 install:
  - cabal install --only-dependencies --enable-tests --enable-documentation
 script:
