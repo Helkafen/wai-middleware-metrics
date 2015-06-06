@@ -1,5 +1,4 @@
 env:
- - CABALVER=1.16 GHCVER=7.6.1
  - CABALVER=1.16 GHCVER=7.6.2
  - CABALVER=1.18 GHCVER=7.6.3
  - CABALVER=1.18 GHCVER=7.8.1
@@ -26,4 +25,4 @@ script:
  - cabal build
  - cabal test
  - cabal sdist
- - cabal install --force-reinstalls dist/*-*.tar.gz`
+ - cabal install --force-reinstalls dist/*-*.tar.gz
