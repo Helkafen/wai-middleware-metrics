@@ -16,7 +16,7 @@ cabal-version:       >=1.10
 
 library
   exposed-modules:     Network.Wai.Metrics
-  build-depends:       base >=4.7 && <4.8
+  build-depends:       base >=4.6 && <4.9
                       ,wai
                       ,ekg-core
                       ,http-types
@@ -25,7 +25,7 @@ library
   ghc-options:        -O2 -Wall
 
 executable wai-metrics-scotty-demo
-  build-depends:       base >=4.7 && <4.9
+  build-depends:       base >=4.6 && <4.9
                      , wai-metrics
                      , ekg-core
                      , ekg
@@ -39,7 +39,7 @@ executable wai-metrics-scotty-demo
   ghc-options:        -O2 -Wall -with-rtsopts=-T
 
 test-suite unit
-  build-depends:       base
+  build-depends:       base >=4.6 && <4.9
                      , wai
                      , ekg-core
                      , wai-metrics
