@@ -1,4 +1,4 @@
-# wai-metrics
+# wai-middleware-metrics
 
 [![Build Status](https://travis-ci.org/Helkafen/wai-metrics.svg?branch=master)](https://travis-ci.org/Helkafen/wai-metrics)
 

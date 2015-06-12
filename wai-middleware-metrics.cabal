@@ -1,4 +1,4 @@
-name:                wai-metrics
+name:                wai-middleware-metrics
 version:             0.2.0
 synopsis:            A WAI middleware to collect EKG request metrics
 description:         This WAI middleware counts the number of requests and the number of server errors (http status from 500 to 600).
@@ -29,7 +29,7 @@ test-suite unit
   build-depends:       base >=4.6 && < 4.9
                      , wai >= 3.0 && < 3.1
                      , ekg-core >= 0.1 && < 0.2
-                     , wai-metrics
+                     , wai-middleware-metrics
                      , tasty >= 0.10.1 && < 0.11
                      , tasty-hunit >= 0.8 && < 0.10
                      , tasty-quickcheck >= 0.8.2 && < 0.9
