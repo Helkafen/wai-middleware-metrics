@@ -23,7 +23,7 @@ library
                      , http-types >= 0.8
                      , time >= 1.4
   default-language:    Haskell2010
-  ghc-options:        -O2 -Wall
+  ghc-options:        -Wall
 
 test-suite unit
   build-depends:       base >=4.6 && < 5
