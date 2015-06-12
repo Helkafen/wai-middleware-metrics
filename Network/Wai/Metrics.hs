@@ -76,7 +76,7 @@ registerWaiMetrics store = do
   return $ WaiMetrics req err tim
 
 {-|
-Create a middleware to be added to WAI.
+Create a middleware to be added to a WAI-based webserver.
 -}
 metrics :: WaiMetrics -> Middleware
 metrics waiMetrics app req respond = do
