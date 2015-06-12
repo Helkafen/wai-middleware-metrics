@@ -46,4 +46,4 @@ test-suite unit
 
 source-repository head
   type:     git
-  location: git://github.com/Helkafen/wai-metrics.git
+  location: git://github.com/Helkafen/wai-middleware-metrics.git
