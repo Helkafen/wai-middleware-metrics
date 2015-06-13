@@ -18,15 +18,11 @@ install:
  - cabal --version
  - echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"
  - travis_retry cabal update
- - travis_retry cabal install hpc-coveralls
- - cabal install --only-dependencies --enable-tests --enable-documentation --enable-benchmarks --enable-library-coverage
+ - cabal install --only-dependencies --enable-tests --enable-documentation --enable-benchmarks
 
 script:
  - cabal configure --enable-tests --enable-benchmarks -v2
  - cabal build
- - run-cabal-test
+ - cabal test
  - cabal sdist
  - cabal install --force-reinstalls dist/*-*.tar.gz
-
-after_script:
-  - hpc-coveralls unit
