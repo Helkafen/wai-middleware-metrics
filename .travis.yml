@@ -12,13 +12,14 @@ before_install:
  - travis_retry sudo add-apt-repository -y ppa:hvr/ghc
  - travis_retry sudo apt-get update
  - travis_retry sudo apt-get install cabal-install-$CABALVER ghc-$GHCVER
+ - travis_retry cabal install hpc-coveralls
  - export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$PATH
 
 install:
  - cabal --version
  - echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"
  - travis_retry cabal update
- - cabal install --only-dependencies --enable-tests --enable-documentation --enable-benchmarks
+ - cabal install --only-dependencies --enable-tests --enable-documentation --enable-benchmarks --enable-library-coverage
 
 script:
  - cabal configure --enable-tests --enable-benchmarks -v2
@@ -26,3 +27,6 @@ script:
  - cabal test
  - cabal sdist
  - cabal install --force-reinstalls dist/*-*.tar.gz
+
+after_script:
+  - hpc-coveralls unit
