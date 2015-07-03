@@ -1,0 +1,8 @@
+flags: {}
+packages:
+- '.'
+- examples/
+extra-deps:
+- ekg-0.4.0.6
+- ekg-core-0.1.0.4
+resolver: nightly-2015-07-02
