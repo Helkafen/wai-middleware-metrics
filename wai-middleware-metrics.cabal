@@ -34,7 +34,7 @@ test-suite metrics-test
                      , tasty >= 0.10.1
                      , tasty-hunit >= 0.8
                      , tasty-quickcheck >= 0.8.2
-                     , QuickCheck == 2.7
+                     , QuickCheck >= 2.7
                      , scotty >= 0.8.0
                      , transformers >= 0.3
                      , bytestring >= 0.10.0.2

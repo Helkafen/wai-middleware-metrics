@@ -3,7 +3,6 @@ version:             0.2.0
 synopsis:            Example programs for wai-middleware-metrics
 description:         Example programs illustrating how to insert the middleware in some web servers.
 license:             BSD3
-license-file:        LICENSE
 author:              Sebastian de Bellefon
 maintainer:          arnaudpourseb@gmail.com
 category:            Web
