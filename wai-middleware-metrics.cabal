@@ -1,7 +1,7 @@
 name:                wai-middleware-metrics
 version:             0.2.1
 synopsis:            A WAI middleware to collect EKG request metrics
-description:         This WAI middleware counts the number of requests, the number of server errors (http status >= 500) and keeps a latency distribution.
+description:         This WAI middleware counts the number of requests, the number of responses by status code and keeps a latency distribution.
                      .
                      It can be added to any WAI-based webserver, such as Yesod, Scotty, Spock and Servant.
                      .
