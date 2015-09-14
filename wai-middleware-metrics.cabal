@@ -1,5 +1,5 @@
 name:                wai-middleware-metrics
-version:             0.2.1
+version:             0.2.2
 synopsis:            A WAI middleware to collect EKG request metrics
 description:         This WAI middleware counts the number of requests, the number of responses by status code and keeps a latency distribution.
                      .
