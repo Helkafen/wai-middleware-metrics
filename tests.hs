@@ -58,7 +58,7 @@ readRequestCounter action times = do
 readErrorCounter :: (Application -> IO a) -> Int -> IO Int64
 readErrorCounter action times = do
   waiMetrics <- testServer action times
-  Counter.read (serverErrorCounter waiMetrics)
+  Counter.read (statusCode500Counter waiMetrics)
 
 -- Return the response time distribution after running n times
 -- an action over a fresh scotty server
