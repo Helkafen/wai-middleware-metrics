@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 {-|
 Module      : Network.Wai.Metrics
 License     : BSD3
@@ -44,20 +45,21 @@ module Network.Wai.Metrics (
   WaiMetrics(..),
   metrics) where
 
-import Network.Wai
-import System.Metrics
-import Control.Applicative
-import Data.Time.Clock
-import qualified System.Metrics.Counter as Counter
+import           Control.Applicative
+import           Data.Time.Clock
+import           Network.HTTP.Types.Status   (statusCode)
+import           Network.Wai
+import           Prelude
+import           System.Metrics
+import qualified System.Metrics.Counter      as Counter
 import qualified System.Metrics.Distribution as Distribution
-import Network.HTTP.Types.Status (statusCode)
 
 {-|
 The metrics to feed in WAI and register in EKG.
 -}
 data WaiMetrics = WaiMetrics {
-  requestCounter :: Counter.Counter
- ,latencyDistribution :: Distribution.Distribution
+  requestCounter       :: Counter.Counter
+ ,latencyDistribution  :: Distribution.Distribution
  ,statusCode100Counter :: Counter.Counter
  ,statusCode200Counter :: Counter.Counter
  ,statusCode300Counter :: Counter.Counter
