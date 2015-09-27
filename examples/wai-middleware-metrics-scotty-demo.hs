@@ -2,14 +2,14 @@
 
 module Main where
 
-import Network.Wai.Metrics
-import Web.Scotty
-import Control.Applicative
-import Control.Concurrent (forkIO, threadDelay)
+import           Control.Applicative
+import           Control.Concurrent          (forkIO, threadDelay)
+import           Network.Wai.Metrics
+import           Web.Scotty
 
-import System.Remote.Monitoring (serverMetricStore, forkServer)
-import qualified System.Metrics.Counter as Counter
+import qualified System.Metrics.Counter      as Counter
 import qualified System.Metrics.Distribution as Distribution
+import           System.Remote.Monitoring    (forkServer, serverMetricStore)
 
 readCounters :: WaiMetrics -> IO()
 readCounters w = do
