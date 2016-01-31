@@ -2,27 +2,28 @@
 
 module Main where
 
-import Control.Monad (replicateM_, liftM)
-import Control.Concurrent (threadDelay)
-import Control.Monad.IO.Class (liftIO)
-import Data.Int (Int64)
+import           Control.Concurrent          (threadDelay)
+import           Control.Monad               (liftM, replicateM_)
+import           Control.Monad.IO.Class      (liftIO)
+import           Data.Int                    (Int64)
 
-import Test.Tasty
-import Test.Tasty.HUnit
-import qualified Test.Tasty.QuickCheck as QC
-import qualified Test.QuickCheck.Monadic as QCM
-import qualified Data.ByteString as BS
+import qualified Data.ByteString             as BS
+import qualified Test.QuickCheck.Monadic     as QCM
+import           Test.Tasty
+import           Test.Tasty.HUnit
+import qualified Test.Tasty.QuickCheck       as QC
 
-import Web.Scotty (scottyApp, middleware, get, html, raise)
+import           Web.Scotty                  (get, html, middleware, raise,
+                                              scottyApp)
 
-import Network.Wai (Application)
-import qualified Network.Wai.Test as WT
+import           Network.Wai                 (Application)
+import qualified Network.Wai.Test            as WT
 
-import System.Metrics
-import qualified System.Metrics.Counter as Counter
+import           System.Metrics
+import qualified System.Metrics.Counter      as Counter
 import qualified System.Metrics.Distribution as Distribution
 
-import Network.Wai.Metrics
+import           Network.Wai.Metrics
 
 -- Send a GET request to a WAI Application
 httpGet :: BS.ByteString -> Application -> IO WT.SResponse
@@ -40,9 +41,9 @@ testServer action times = do
   waiMetrics <- registerWaiMetrics store
   app <- scottyApp $ do
     middleware (metrics waiMetrics)
-    get "/" $ html "Ping"
+    get "/"      $ html "Ping"
     get "/error" $ raise "error"
-    get "/wait" $ liftIO (threadDelay 100000) >> html "Ping"
+    get "/wait"  $ liftIO (threadDelay 100000) >> html "Ping"
   replicateM_ times (action app)
   return waiMetrics
 

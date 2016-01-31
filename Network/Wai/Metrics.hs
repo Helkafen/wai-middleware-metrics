@@ -81,13 +81,13 @@ Register in EKG a number of metrics related to web server activity.
 registerWaiMetrics :: Store -> IO WaiMetrics
 registerWaiMetrics store =
   WaiMetrics
-    <$> createCounter "wai.request_count" store
+    <$> createCounter      "wai.request_count"        store
     <*> createDistribution "wai.latency_distribution" store
-    <*> createCounter "wai.response_status_1xx" store
-    <*> createCounter "wai.response_status_2xx" store
-    <*> createCounter "wai.response_status_3xx" store
-    <*> createCounter "wai.response_status_4xx" store
-    <*> createCounter "wai.response_status_5xx" store
+    <*> createCounter      "wai.response_status_1xx"  store
+    <*> createCounter      "wai.response_status_2xx"  store
+    <*> createCounter      "wai.response_status_3xx"  store
+    <*> createCounter      "wai.response_status_4xx"  store
+    <*> createCounter      "wai.response_status_5xx"  store
 
 {-|
 Create a middleware to be added to a WAI-based webserver.
