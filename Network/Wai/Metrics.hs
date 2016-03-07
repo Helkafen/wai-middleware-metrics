@@ -42,10 +42,14 @@ Compatible web servers include the following:
 -}
 module Network.Wai.Metrics (
   registerWaiMetrics,
+  registerNamedWaiMetrics,
   WaiMetrics(..),
   metrics) where
 
 import           Control.Applicative
+import           Data.Monoid                 ((<>))
+import           Data.Text                   (Text)
+import qualified Data.Text                   as Text
 import           Data.Time.Clock
 import           Network.HTTP.Types.Status   (statusCode)
 import           Network.Wai
@@ -53,6 +57,7 @@ import           Prelude
 import           System.Metrics
 import qualified System.Metrics.Counter      as Counter
 import qualified System.Metrics.Distribution as Distribution
+
 
 {-|
 The metrics to feed in WAI and register in EKG.
@@ -68,7 +73,7 @@ data WaiMetrics = WaiMetrics {
 }
 
 {-|
-Register in EKG a number of metrics related to web server activity.
+Register in EKG a number of metrics related to web server activity using empty namespace.
 
 * @wai.request_count@
 * @wai.response_status_1xx@
@@ -79,15 +84,36 @@ Register in EKG a number of metrics related to web server activity.
 * @wai.latency_distribution@
 -}
 registerWaiMetrics :: Store -> IO WaiMetrics
-registerWaiMetrics store =
+registerWaiMetrics = registerNamedWaiMetrics ""
+
+
+{-|
+Register in EKG a number of metrics related to web server activity with a
+namespace.
+
+* @<namespace>.wai.request_count@
+* @<namespace>.wai.response_status_1xx@
+* @<namespace>.wai.response_status_2xx@
+* @<namespace>.wai.response_status_3xx@
+* @<namespace>.wai.response_status_4xx@
+* @<namespace>.wai.response_status_5xx@
+* @<namespace>.wai.latency_distribution@
+-}
+registerNamedWaiMetrics :: Text -> Store -> IO WaiMetrics
+registerNamedWaiMetrics  namespace store =
   WaiMetrics
-    <$> createCounter      "wai.request_count"        store
-    <*> createDistribution "wai.latency_distribution" store
-    <*> createCounter      "wai.response_status_1xx"  store
-    <*> createCounter      "wai.response_status_2xx"  store
-    <*> createCounter      "wai.response_status_3xx"  store
-    <*> createCounter      "wai.response_status_4xx"  store
-    <*> createCounter      "wai.response_status_5xx"  store
+    <$> createCounter      (namespace' <> "wai.request_count")        store
+    <*> createDistribution (namespace' <> "wai.latency_distribution") store
+    <*> createCounter      (namespace' <> "wai.response_status_1xx")  store
+    <*> createCounter      (namespace' <> "wai.response_status_2xx")  store
+    <*> createCounter      (namespace' <> "wai.response_status_3xx")  store
+    <*> createCounter      (namespace' <> "wai.response_status_4xx")  store
+    <*> createCounter      (namespace' <> "wai.response_status_5xx")  store
+  where
+    -- append a '.' to a given namespace, if not empty
+    namespace'
+      |Text.null namespace = namespace
+      | otherwise = namespace <> "."
 
 {-|
 Create a middleware to be added to a WAI-based webserver.
