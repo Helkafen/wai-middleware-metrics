@@ -100,7 +100,7 @@ namespace.
 * @<namespace>.wai.latency_distribution@
 -}
 registerNamedWaiMetrics :: Text -> Store -> IO WaiMetrics
-registerNamedWaiMetrics  namespace store =
+registerNamedWaiMetrics namespace store =
   WaiMetrics
     <$> createCounter      (namespace' <> "wai.request_count")        store
     <*> createDistribution (namespace' <> "wai.latency_distribution") store
@@ -113,7 +113,7 @@ registerNamedWaiMetrics  namespace store =
     -- append a '.' to a given namespace, if not empty
     namespace'
       |Text.null namespace = namespace
-      | otherwise = namespace <> "."
+      |otherwise = namespace <> "."
 
 {-|
 Create a middleware to be added to a WAI-based webserver.
