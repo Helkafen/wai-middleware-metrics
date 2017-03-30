@@ -11,7 +11,7 @@ cabal-version:       >=1.10
 
 
 executable wai-middleware-metrics-scotty-demo
-  build-depends:       base >=4.6 && < 4.9
+  build-depends:       base >=4.6 && < 5
                      , wai-middleware-metrics
                      , ekg-core
                      , ekg
